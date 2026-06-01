@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Quản lý Nhân sự </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h2>ONURI COFFEE<h2>
+            <ul>
+                <li><a href="/dashboard" class="active">Trang Chủ</a></li>
+                <li><a href="/nhan_vien">Nhân viên</a></li>
+                <li><a href="/chuc_vu">Chức vụ</a></li>
+                <li><a href="/luong">Lương</a></li>
+                <li><a href="/cham_cong">Chấm công</a></li>
+                <li><a href="/cua_hang">Cửa hàng</a></li>
+                <li><a href="/ca_lam">Ca làm</a></li>
+                </ul>
+        </div>
+        <div class="main-content">
+            <div class="navbar">
+                <h3>Chào mừng, <span class="user-info">{{ session['username'] }}</span>!</h3>
+                <a href="/logout" class="logout-button">Đăng xuất</a>
+            </div>
+
+            <div class="dashboard-summary">
+                <div class="summary-card">
+                    <h4>SỐ NHÂN VIÊN</h4>
+                    <p>{{ total_employees }}</p>
+                </div>
+                
+                <div class="summary-card">
+                    <h4>PHIẾU LƯƠNG</h4>
+                    <p>{{ total_salaries }}</p>
+                </div>
+                <div class="summary-card">
+                    <h4>ĐÃ NHẬN LƯƠNG THÁNG NÀY</h4>
+                    <p>{{ employees_paid_this_month }}</p>
+                </div>
+            </div>
+
+            <div class="data-table-container">
+                <h3>Nhân viên gần đây</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mã NV</th>
+                            <th>Họ Tên</th>
+                            <th>Email</th>
+                            <th>Chức vụ</th>
+                            <th>Ngày vào làm</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for nv in recent_employees %}
+                        <tr>
+                            <td>{{ nv.MaNhanVien }}</td>
+                            <td>{{ nv.HoTen }}</td>
+                            <td>{{ nv.Email }}</td>
+                            <td>{{ nv.TenChucVu }}</td>
+                            <td>{{ nv.NgayVaoLam }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6">Không có nhân viên nào.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            </div>
+    </div>
+</body>
+</html>

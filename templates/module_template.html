@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Quản lý Nhân sự ONURI Coffee</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h2>ONURI COFFEE</h2>
+            <ul>
+                <li><a href="/dashboard" class="{% if title == 'Trang Chủ' %}active{% endif %}">Trang Chủ</a></li>
+                <li><a href="/nhan_vien" class="{% if title == 'Quản lý Nhân viên' %}active{% endif %}">Nhân viên</a></li>
+                <li><a href="/cua_hang" class="{% if title == 'Quản lý Cửa hàng' %}active{% endif %}">Cửa hàng</a></li> 
+                <li><a href="/chuc_vu" class="{% if title == 'Quản lý Chức vụ' %}active{% endif %}">Chức vụ</a></li>
+                <li><a href="/luong" class="{% if title == 'Quản lý Lương' %}active{% endif %}">Lương</a></li>
+                <li><a href="/cham_cong" class="{% if title == 'Quản lý Chấm công' %}active{% endif %}">Chấm công</a></li>
+                <li><a href="/ca_lam" class="{% if title == 'Quản lý Ca làm' %}active{% endif %}">Ca làm</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="navbar">
+                <h3>{{ title }}</h3>
+                <a href="/logout" class="logout-button">Đăng xuất</a>
+            </div>
+
+            {# Flash Messages - Hiển thị thông báo thành công/lỗi #}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                <ul class="flash-messages">
+                {% for category, message in messages %}
+                  <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+
+            <div class="action-buttons">
+                {# Nút "Thêm mới" chỉ hiển thị cho module Nhân viên (ví dụ) #}
+                {% if title == 'Quản lý Nhân viên' %}
+                <a href="{{ url_for('add_nhan_vien') }}" class="add-new-button">Thêm mới Nhân viên</a>
+                <a href="{{ url_for('export_nhan_vien_csv') }}" class="add-new-button export-csv-button">Xuất CSV</a> 
+                {% endif %}
+            </div>
+
+            <div class="data-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            {% for header in headers %}
+                            <th>{{ header }}</th>
+                            {% endfor %}
+                            {# Thêm cột Thao tác cho các module có thể sửa/xóa #}
+                            {% if title == 'Quản lý Nhân viên' %}
+                            <th>Thao tác</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if data %}
+                            {% for row in data %}
+                            <tr>
+                                {% for item in row.values() %} {# Lấy giá trị từ dict #}
+                                <td>{{ item }}</td>
+                                {% endfor %}
+                                {# Nút Sửa/Xóa cho Nhân viên #}
+                                {% if title == 'Quản lý Nhân viên' %}
+                                <td>
+                                    <a href="{{ url_for('edit_nhan_vien', ma_nv=row.MaNhanVien) }}" class="action-button edit-button">Sửa</a>
+                                    <a href="{{ url_for('delete_nhan_vien', ma_nv=row.MaNhanVien) }}" class="action-button delete-button" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên {{ row.HoTen }} không?');">Xóa</a>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="{{ headers|length + (1 if title == 'Quản lý Nhân viên' else 0) }}">Không có dữ liệu.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            </div>
+    </div>
+</body>
+</html>

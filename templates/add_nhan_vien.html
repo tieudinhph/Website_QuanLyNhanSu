@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm mới Nhân viên - Quản lý Nhân sự </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto; 
+        }
+        .form-container h3 {
+            text-align: center;
+            color: #DC3545;
+            margin-bottom: 25px;
+        }
+        .form-container .form-group {
+            margin-bottom: 15px;
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-container input[type="text"],
+        .form-container input[type="date"],
+        .form-container input[type="email"],
+        .form-container select {
+            width: calc(100% - 22px); 
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .form-container button {
+            background-color: #DC3545;
+            color: #fff;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .form-container button:hover {
+            background-color: #c82333;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .form-actions .back-button {
+            background-color: #6c757d;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            flex-grow: 1;
+            transition: background-color 0.3s ease;
+        }
+        .form-actions .back-button:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h2>ONURI COFFEE</h2>
+            <ul>
+                <li><a href="/dashboard">Trang Chủ</a></li>
+                <li><a href="/nhan_vien" class="active">Nhân viên</a></li>
+                <li><a href="/cua_hang">Cửa hàng</a></li>
+                <li><a href="/chuc_vu">Chức vụ</a></li>
+                <li><a href="/luong">Lương</a></li>
+                <li><a href="/cham_cong">Chấm công</a></li>
+                <li><a href="/ca_lam">Ca làm</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="navbar">
+                <h3>Thêm mới Nhân viên</h3>
+                <a href="/logout" class="logout-button">Đăng xuất</a>
+            </div>
+
+            {# Flash Messages #}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                <ul class="flash-messages">
+                {% for category, message in messages %}
+                  <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+
+            <div class="form-container">
+                <form method="POST" action="{{ url_for('add_nhan_vien') }}">
+                    <div class="form-group">
+                        <label for="ma_nhan_vien">Mã Nhân viên:</label>
+                        <input type="text" id="ma_nhan_vien" name="ma_nhan_vien" value="{{ form_data.ma_nhan_vien if form_data else '' }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ho_ten">Họ Tên:</label>
+                        <input type="text" id="ho_ten" name="ho_ten" value="{{ form_data.ho_ten if form_data else '' }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gioi_tinh">Giới Tính:</label>
+                        <select id="gioi_tinh" name="gioi_tinh" required>
+                            <option value="Nam" {% if form_data and form_data.gioi_tinh == 'Nam' %}selected{% endif %}>Nam</option>
+                            <option value="Nu" {% if form_data and form_data.gioi_tinh == 'Nu' %}selected{% endif %}>Nữ</option>
+                            <option value="Khac" {% if form_data and form_data.gioi_tinh == 'Khac' %}selected{% endif %}>Khác</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ngay_sinh">Ngày Sinh:</label>
+                        <input type="date" id="ngay_sinh" name="ngay_sinh" value="{{ form_data.ngay_sinh if form_data else '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="sdt">Số Điện Thoại:</label>
+                        <input type="text" id="sdt" name="sdt" value="{{ form_data.sdt if form_data else '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" value="{{ form_data.email if form_data else '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="dia_chi">Địa Chỉ:</label>
+                        <input type="text" id="dia_chi" name="dia_chi" value="{{ form_data.dia_chi if form_data else '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="ngay_vao_lam">Ngày Vào Làm:</label>
+                        <input type="date" id="ngay_vao_lam" name="ngay_vao_lam" value="{{ form_data.ngay_vao_lam if form_data else '' }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ma_cua_hang">Cửa Hàng:</label>
+                        <select id="ma_cua_hang" name="ma_cua_hang" required>
+                            {% for ch in cua_hangs %}
+                            <option value="{{ ch.MaCuaHang }}" {% if form_data and form_data.ma_cua_hang == ch.MaCuaHang %}selected{% endif %}>{{ ch.TenCuaHang }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ma_chuc_vu">Chức Vụ:</label>
+                        <select id="ma_chuc_vu" name="ma_chuc_vu" required>
+                            {% for cv in chuc_vus %}
+                            <option value="{{ cv.MaChucVu }}" {% if form_data and form_data.ma_chuc_vu == cv.MaChucVu %}selected{% endif %}>{{ cv.TenChucVu }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit">Thêm Nhân viên</button>
+                    <div class="form-actions">
+                        <a href="{{ url_for('nhan_vien') }}" class="back-button">Quay lại</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
